@@ -84,8 +84,7 @@ fun lengthInMeters(sagenes: Int, arshins: Int, vershoks: Int): Double =
  */
 fun angleInRadian(deg: Int, min: Int, sec: Int): Double {
     val degrees = deg.toDouble() * 60 * 60 + min.toDouble() * 60 + sec.toDouble()
-    val x = degrees / (180 * 60 * 60) * PI
-    return x
+    return degrees / (180 * 60 * 60) * PI
 }
 
 /**
@@ -126,10 +125,9 @@ fun travelMinutes(hoursDepart: Int, minutesDepart: Int, hoursArrive: Int, minute
  * Например, 100 рублей под 10% годовых превратятся в 133.1 рубля
  */
 fun accountInThreeYears(initial: Int, percent: Int): Double {
-    val initial_double = initial.toDouble()
-    val percent_double = percent.toDouble()
-    val end = initial_double * (1 + percent_double / 100) * (1 + percent_double / 100) * (1 + percent_double / 100)
-    return end
+    val doubleInitial = initial.toDouble()
+    val doublePercent = percent.toDouble()
+    return doubleInitial * (1 + doublePercent / 100).pow(3)
 }
 
 /**
