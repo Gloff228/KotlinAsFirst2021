@@ -173,7 +173,7 @@ fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
 fun segmentLength(a: Int, b: Int, c: Int, d: Int): Int {
     var s = -1
     for (i in min(a, c)..max(b, d)) {
-        if (((i >= a) and (i >= c)) and ((i <= b) and (i <= d))) {
+        if ((i in a..b) and (i in c..d)) {
             s += 1
         }
     }
