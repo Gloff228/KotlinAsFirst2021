@@ -160,7 +160,18 @@ fun rookOrBishopThreatens(
  * прямоугольным (вернуть 1) или тупоугольным (вернуть 2).
  * Если такой треугольник не существует, вернуть -1.
  */
-fun triangleKind(a: Double, b: Double, c: Double): Int = TODO()
+fun triangleKind(a: Double, b: Double, c: Double): Int {
+    val s = arrayListOf(a, b, c)
+    s.sort()
+    val b1 = s[1]
+    val a1 = s[0]
+    val c1 = s[2]
+    if (c1 >= b1 + a1) return -1
+    if (acos((a1 * a1 + b1 * b1 - c1 * c1) / (2 * b * c)) > PI/2) return 2
+    if (acos((a1 * a1 + b1 * b1 - c1 * c1) / (2 * b * c)) == PI/2) return 1
+    return 0
+
+}
 
 /**
  * Средняя (3 балла)
