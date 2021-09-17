@@ -243,12 +243,30 @@ fun cos(x: Double, eps: Double): Double = TODO()
  * Сложная (4 балла)
  *
  * Найти n-ю цифру последовательности из квадратов целых чисел:
- * 149162536496481100121144...
+ * 149162536496481100121144169...
  * Например, 2-я цифра равна 4, 7-я 5, 12-я 6.
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun squareSequenceDigit(n: Int): Int = TODO()
+fun squareSequenceDigit(n: Int): Int {
+    var i = 1
+    var count = 0
+    while (count < n) {
+        var ten = 1
+        val num = i * i
+        var countTen = 1
+        while (ten * 10 <= num) {
+            ten *= 10
+            countTen += 1
+        }
+        count += countTen
+        if (count >= n) {
+            return (num / 10.0.pow(count - n) % 10).toInt()
+        }
+        i += 1
+    }
+    return 0
+}
 
 /**
  * Сложная (5 баллов)
@@ -259,8 +277,26 @@ fun squareSequenceDigit(n: Int): Int = TODO()
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun fibSequenceDigit(n: Int): Int = TODO()
+fun fibSequenceDigit(n: Int): Int {
+    var i = 1
+    var count = 0
+    while (count < n) {
+        var ten = 1
+        val num = fib(i)
+        var countTen = 1
+        while (ten * 10 <= num) {
+            ten *= 10
+            countTen += 1
+        }
+        count += countTen
+        if (count >= n) {
+            return (num / 10.0.pow(count - n) % 10).toInt()
+        }
+        i += 1
+    }
+    return 0
+}
 
 fun main() {
-    print(maxDivisor(17))
+    print("Hello")
 }
