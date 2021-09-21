@@ -72,7 +72,16 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun digitNumber(n: Int): Int = (n.toString()).length
+fun digitNumber(n: Int): Int {
+    var countTen = 0
+    var num = n
+    if (n == 0) return 1
+    while (num > 0) {
+        num /= 10
+        countTen += 1
+    }
+    return countTen
+}
 
 /**
  * Простая (2 балла)
@@ -253,14 +262,8 @@ fun squareSequenceDigit(n: Int): Int {
     var count = 0
     var num = 0
     while (count < n) {
-        var ten = 10
         num = i * i
-        var countTen = 1
-        while (ten <= num) {
-            ten *= 10
-            countTen += 1
-        }
-        count += countTen
+        count += digitNumber(num)
         i += 1
     }
     return (num / 10.0.pow(count - n) % 10).toInt()
@@ -280,17 +283,10 @@ fun fibSequenceDigit(n: Int): Int {
     var count = 0
     var num = 0
     while (count < n) {
-        var ten = 10
         num = fib(i)
-        var countTen = 1
-        while (ten <= num) {
-            ten *= 10
-            countTen += 1
-        }
-        count += countTen
+        count += digitNumber(num)
         i += 1
     }
-
     return (num / 10.0.pow(count - n) % 10).toInt()
 }
 
