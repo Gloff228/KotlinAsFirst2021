@@ -74,7 +74,7 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  */
 fun digitNumber(n: Int): Int {
     var countTen = 0
-    var num = n
+    var num = abs(n)
     if (n == 0) return 1
     while (num > 0) {
         num /= 10
@@ -90,11 +90,7 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = when (n) {
-    1 -> 1
-    2 -> 1
-    else -> fib(n - 2) + fib(n - 1)
-}
+fun fib(n: Int): Int = ((((1 + sqrt(5.0)) / 2).pow(n) - ((1 - sqrt(5.0)) / 2).pow(n)) / sqrt(5.0)).toInt()
 
 /**
  * Простая (2 балла)
@@ -292,5 +288,5 @@ fun fibSequenceDigit(n: Int): Int {
 }
 
 fun main() {
-    print(squareSequenceDigit(413702))
+
 }
