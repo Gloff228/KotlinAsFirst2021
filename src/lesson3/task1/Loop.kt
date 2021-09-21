@@ -83,6 +83,7 @@ fun digitNumber(n: Int): Int {
     return countTen
 }
 
+
 /**
  * Простая (2 балла)
  *
