@@ -251,21 +251,19 @@ fun cos(x: Double, eps: Double): Double = TODO()
 fun squareSequenceDigit(n: Int): Int {
     var i = 1
     var count = 0
+    var num = 0
     while (count < n) {
-        var ten = 1
-        val num = i * i
+        var ten = 10
+        num = i * i
         var countTen = 1
-        while (ten * 10 <= num) {
+        while (ten <= num) {
             ten *= 10
             countTen += 1
         }
         count += countTen
-        if (count >= n) {
-            return (num / 10.0.pow(count - n) % 10).toInt()
-        }
         i += 1
     }
-    return 0
+    return (num / 10.0.pow(count - n) % 10).toInt()
 }
 
 /**
@@ -280,23 +278,22 @@ fun squareSequenceDigit(n: Int): Int {
 fun fibSequenceDigit(n: Int): Int {
     var i = 1
     var count = 0
+    var num = 0
     while (count < n) {
-        var ten = 1
-        val num = fib(i)
+        var ten = 10
+        num = fib(i)
         var countTen = 1
-        while (ten * 10 <= num) {
+        while (ten <= num) {
             ten *= 10
             countTen += 1
         }
         count += countTen
-        if (count >= n) {
-            return (num / 10.0.pow(count - n) % 10).toInt()
-        }
         i += 1
     }
-    return 0
+
+    return (num / 10.0.pow(count - n) % 10).toInt()
 }
 
 fun main() {
-    print("Hello")
+    print(squareSequenceDigit(413702))
 }
