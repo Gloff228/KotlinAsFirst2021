@@ -73,10 +73,9 @@ fun digitCountInNumber(n: Int, m: Int): Int =
  * Использовать операции со строками в этой задаче запрещается.
  */
 fun digitNumber(n: Int): Int {
-    var countTen = 0
+    var countTen = 1
     var num = abs(n)
-    if (n == 0) return 1
-    while (num > 0) {
+    while (num > 9) {
         num /= 10
         countTen += 1
     }
@@ -129,11 +128,11 @@ fun maxDivisor(n: Int): Int {
  * этого для какого-либо начального X > 0.
  */
 fun collatzSteps(x: Int): Int {
-    var c = x.toDouble()
+    var c = x
     var count = 0
-    while (c != 1.0) {
+    while (c != 1) {
         when {
-            c % 2 == 0.0 -> c /= 2
+            c % 2 == 0 -> c /= 2
             else -> c = c * 3 + 1
         }
         count += 1
@@ -161,8 +160,9 @@ fun lcm(m: Int, n: Int): Int {
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
+    val t = max(m, n) % min(m, n) == 0
     for (i in 2..(sqrt(min(m, n).toDouble())).toInt()) {
-        if ((m % i == 0 && n % i == 0) || max(m, n) % min(m, n) == 0) {
+        if (t || (m % i == 0 && n % i == 0)) {
             return false
         }
     }
