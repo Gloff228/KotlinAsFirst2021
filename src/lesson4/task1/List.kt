@@ -309,7 +309,7 @@ fun roman(n: Int): String {
  * 23964 = "двадцать три тысячи девятьсот шестьдесят четыре"
  */
 
-fun first(n: Int): List<String> {
+fun word(n: Int): List<String> {
     val a = n / 100
     val b = n / 10 % 10
     val c = n % 10
@@ -366,11 +366,11 @@ fun russian(n: Int): String {
     val a = n / 1000
     val b = n % 1000
     val string = when {
-        a == 0 -> first(b)
-        a % 10 == 0 || a % 10 >= 5 || (a % 100 in 10..20) -> first(a) + "тысяч" + first(b)
-        a % 10 == 1 -> first(a) + "тысяча" + first(b)
-        a % 10 in 2..5 -> first(a) + "тысячи" + first(b)
-        else -> first(b)
+        a == 0 -> word(b)
+        a % 10 == 0 || a % 10 >= 5 || (a % 100 in 10..20) -> word(a) + "тысяч" + word(b)
+        a % 10 == 1 -> word(a) + "тысяча" + word(b)
+        a % 10 in 2..5 -> word(a) + "тысячи" + word(b)
+        else -> word(b)
     }.toMutableList()
     when {
         string.last() == "одна" -> string[string.lastIndex] = "один"
