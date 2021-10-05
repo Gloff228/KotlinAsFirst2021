@@ -97,8 +97,8 @@ fun fib(n: Int): Int = ((((1 + sqrt(5.0)) / 2).pow(n) - ((1 - sqrt(5.0)) / 2).po
  * Для заданного числа n > 1 найти минимальный делитель, превышающий 1
  */
 fun minDivisor(n: Int): Int {
-    for (i in 2..n) if (n % i == 0) return i
-    return 1
+    for (i in 2..sqrt(n.toDouble()).toInt()) if (n % i == 0) return i
+    return n
 }
 
 /**
@@ -107,8 +107,8 @@ fun minDivisor(n: Int): Int {
  * Для заданного числа n > 1 найти максимальный делитель, меньший n
  */
 fun maxDivisor(n: Int): Int {
-    for (i in (n - 1) downTo 1) if (n % i == 0) return i
-    return 0
+    for (i in (n - 1) downTo sqrt(n.toDouble()).toInt()) if (n % i == 0) return i
+    return 1
 }
 
 /**

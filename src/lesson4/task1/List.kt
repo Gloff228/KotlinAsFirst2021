@@ -313,7 +313,7 @@ fun first(n: Int): List<String> {
     val a = n / 100
     val b = n / 10 % 10
     val c = n % 10
-    var string: List<String> = listOf()
+    val string = mutableListOf<String>()
     when (a) {
         1 -> string += "сто"
         2 -> string += "двести"
@@ -362,73 +362,24 @@ fun first(n: Int): List<String> {
     return string
 }
 
-fun second(n: Int): List<String> {
-    val a = n / 100
-    val b = n / 10 % 10
-    val c = n % 10
-    var string: List<String> = listOf()
-    when (a) {
-        1 -> string += "сто"
-        2 -> string += "двести"
-        3 -> string += "триста"
-        4 -> string += "четыреста"
-        5 -> string += "пятьсот"
-        6 -> string += "шестьсот"
-        7 -> string += "семьсот"
-        8 -> string += "восемьсот"
-        9 -> string += "девятьсот"
-    }
-    when (b) {
-        1 -> when (c) {
-            1 -> return (string + "одиннадцать")
-            2 -> return (string + "двенадцать")
-            3 -> return (string + "тринадцать")
-            4 -> return (string + "четырнадцать")
-            5 -> return (string + "пятнадцать")
-            6 -> return (string + "шестнадцать")
-            7 -> return (string + "семнадцать")
-            8 -> return (string + "восемнадцать")
-            9 -> return (string + "девятнадцать")
-            0 -> return (string + "десять")
-        }
-        2 -> string += "двадцать"
-        3 -> string += "тридцать"
-        4 -> string += "сорок"
-        5 -> string += "пятьдесят"
-        6 -> string += "шестьдесят"
-        7 -> string += "семьдесят"
-        8 -> string += "восемьдесят"
-        9 -> string += "девяносто"
-    }
-    when (c) {
-        1 -> return (string + "один")
-        2 -> return (string + "два")
-        3 -> return (string + "три")
-        4 -> return (string + "четыре")
-        5 -> return (string + "пять")
-        6 -> return (string + "шесть")
-        7 -> return (string + "семь")
-        8 -> return (string + "восемь")
-        9 -> return (string + "девать")
-        0 -> return (string)
-    }
-    return string
-}
-
 fun russian(n: Int): String {
     val a = n / 1000
     val b = n % 1000
-    var string = when {
-        a == 0 -> second(b)
-        a % 10 == 0 || a % 10 >= 5 || (a % 100 in 10..20) -> first(a) + "тысяч" + second(b)
-        a % 10 == 1 -> first(a) + "тысяча" + second(b)
-        a % 10 in 2..5 -> first(a) + "тысячи" + second(b)
-        else -> second(b)
+    val string = when {
+        a == 0 -> first(b)
+        a % 10 == 0 || a % 10 >= 5 || (a % 100 in 10..20) -> first(a) + "тысяч" + first(b)
+        a % 10 == 1 -> first(a) + "тысяча" + first(b)
+        a % 10 in 2..5 -> first(a) + "тысячи" + first(b)
+        else -> first(b)
+    }.toMutableList()
+    when {
+        string.last() == "одна" -> string[string.lastIndex] = "один"
+        string.last() == "две" -> string[string.lastIndex] = "два"
     }
     return string.joinToString(separator = " ")
 }
 
 
 fun main() {
-    println(russian(120123))
+
 }
