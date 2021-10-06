@@ -356,7 +356,7 @@ fun word(n: Int): List<String> {
         6 -> return (string + "шесть")
         7 -> return (string + "семь")
         8 -> return (string + "восемь")
-        9 -> return (string + "девать")
+        9 -> return (string + "девять")
         0 -> return (string)
     }
     return string
