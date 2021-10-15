@@ -89,8 +89,18 @@ fun digitNumber(n: Int): Int {
  * Найти число Фибоначчи из ряда 1, 1, 2, 3, 5, 8, 13, 21, ... с номером n.
  * Ряд Фибоначчи определён следующим образом: fib(1) = 1, fib(2) = 1, fib(n+2) = fib(n) + fib(n+1)
  */
-fun fib(n: Int): Int = ((((1 + sqrt(5.0)) / 2).pow(n) - ((1 - sqrt(5.0)) / 2).pow(n)) / sqrt(5.0)).toInt()
-
+fun fib(n: Int): Int {
+    if (n in 1..2) return 1
+    var x1 = 1
+    var x2 = 1
+    var end = 0
+    for (i in 3..n) {
+        end = x1 + x2
+        x2 = x1
+        x1 = end
+    }
+    return end
+}
 /**
  * Простая (2 балла)
  *
@@ -146,10 +156,15 @@ fun collatzSteps(x: Int): Int {
  * Для заданных чисел m и n найти наименьшее общее кратное, то есть,
  * минимальное число k, которое делится и на m и на n без остатка
  */
+
+fun mind(m: Int, n: Int): Int {
+    for (i in 2..(sqrt(min(m, n).toDouble())).toInt()) if (n % i == 0 && m % i == 0) return i
+    return 1
+}
+
 fun lcm(m: Int, n: Int): Int {
     if (max(m, n) % min(m, n) == 0) return max(m, n)
-    for (i in 2..min(n, m)) if (n % i == 0 && m % i == 0) return m * n / i
-    return m * n
+    return m * n / mind(m, n)
 }
 
 /**
@@ -161,12 +176,7 @@ fun lcm(m: Int, n: Int): Int {
  */
 fun isCoPrime(m: Int, n: Int): Boolean {
     val t = max(m, n) % min(m, n) == 0
-    for (i in 2..(sqrt(min(m, n).toDouble())).toInt()) {
-        if (t || (m % i == 0 && n % i == 0)) {
-            return false
-        }
-    }
-    return true
+    return !t && (mind(n, m) == 1)
 }
 
 /**
@@ -195,15 +205,7 @@ fun revert(n: Int): Int {
  *
  * Использовать операции со строками в этой задаче запрещается.
  */
-fun isPalindrome(n: Int): Boolean {
-    var c = n
-    var end = 0
-    while (c != 0) {
-        end = end * 10 + c % 10
-        c /= 10
-    }
-    return end == n
-}
+fun isPalindrome(n: Int): Boolean = revert(n) == n
 
 /**
  * Средняя (3 балла)
