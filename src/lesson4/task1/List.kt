@@ -174,8 +174,10 @@ fun times(a: List<Int>, b: List<Int>): Int {
  */
 fun polynom(p: List<Int>, x: Int): Int {
     var c = 0
+    var x1 = 1
     for (i in p.indices) {
-        c += (p[i] * x.toDouble().pow(i)).toInt()
+        c += p[i] * x1
+        x1 *= x
     }
     return c
 }
@@ -268,38 +270,26 @@ fun decimalFromString(str: String, base: Int): Int = TODO()
  * 90 = XC, 100 = C, 400 = CD, 500 = D, 900 = CM, 1000 = M.
  * Например: 23 = XXIII, 44 = XLIV, 100 = C
  */
+
 fun roman(n: Int): String {
+    val alp = listOf("I", "V", "X", "L", "C", "D", "M")
+    val num = listOf(n / 100 % 10, n / 10 % 10, n % 10)
     var end = ""
-    var num = n
-    var x = num / 1000
-    end += "M".repeat(x)
-    num %= 1000
-    x = num / 100
-    end += when (x) {
-        9 -> "CM"
-        8, 7, 6, 5 -> "D${"C".repeat(x - 5)}"
-        4 -> "CD"
-        else -> "C".repeat(x)
-    }
-    num %= 100
-    x = num / 10
-    end += when (x) {
-        9 -> "XC"
-        8, 7, 6, 5 -> "L${"X".repeat(x - 5)}"
-        4 -> "XL"
-        else -> "X".repeat(x)
-    }
-    num %= 10
-    x = num
-    end += when (x) {
-        9 -> "IX"
-        8, 7, 6, 5 -> "V${"I".repeat(x - 5)}"
-        4 -> "IV"
-        else -> "I".repeat(x)
+    end += "M".repeat(n / 1000)
+    var a = alp.size - 1
+    for (x in num) {
+        end += when (x) {
+            9 -> alp[a - 2] + alp[a]
+            8, 7, 6, 5 -> alp[a - 1] + alp[a - 2].repeat(x - 5)
+            4 -> alp[a - 2] + alp[a - 1]
+            else -> alp[a - 2].repeat(x)
+        }
+        a -= 2
     }
     return end
-
 }
+
+
 
 /**
  * Очень сложная (7 баллов)
@@ -310,55 +300,52 @@ fun roman(n: Int): String {
  */
 
 fun word(n: Int): List<String> {
+    val list = listOf(
+        "",
+        "одна",
+        "две",
+        "три",
+        "четыре",
+        "пять",
+        "шесть",
+        "семь",
+        "восемь",
+        "девять",
+        "десять",
+        "одиннадцать",
+        "двенадцать",
+        "тринадцать",
+        "четырнадцать",
+        "пятнадцать",
+        "шестнадцать",
+        "семнадцать",
+        "восемнадцать",
+        "девятнадцать",
+        "двадцать",
+        "тридцать",
+        "сорок",
+        "пятьдесят",
+        "шестьдесят",
+        "семьдесят",
+        "восемьдесят",
+        "девяносто",
+        "сто",
+        "двести",
+        "триста",
+        "четыреста",
+        "пятьсот",
+        "шестьсот",
+        "семьсот",
+        "восемьсот",
+        "девятьсот"
+    )
     val a = n / 100
     val b = n / 10 % 10
     val c = n % 10
     val string = mutableListOf<String>()
-    when (a) {
-        1 -> string += "сто"
-        2 -> string += "двести"
-        3 -> string += "триста"
-        4 -> string += "четыреста"
-        5 -> string += "пятьсот"
-        6 -> string += "шестьсот"
-        7 -> string += "семьсот"
-        8 -> string += "восемьсот"
-        9 -> string += "девятьсот"
-    }
-    when (b) {
-        1 -> when (c) {
-            1 -> return (string + "одиннадцать")
-            2 -> return (string + "двенадцать")
-            3 -> return (string + "тринадцать")
-            4 -> return (string + "четырнадцать")
-            5 -> return (string + "пятнадцать")
-            6 -> return (string + "шестнадцать")
-            7 -> return (string + "семнадцать")
-            8 -> return (string + "восемнадцать")
-            9 -> return (string + "девятнадцать")
-            0 -> return (string + "десять")
-        }
-        2 -> string += "двадцать"
-        3 -> string += "тридцать"
-        4 -> string += "сорок"
-        5 -> string += "пятьдесят"
-        6 -> string += "шестьдесят"
-        7 -> string += "семьдесят"
-        8 -> string += "восемьдесят"
-        9 -> string += "девяносто"
-    }
-    when (c) {
-        1 -> return (string + "одна")
-        2 -> return (string + "две")
-        3 -> return (string + "три")
-        4 -> return (string + "четыре")
-        5 -> return (string + "пять")
-        6 -> return (string + "шесть")
-        7 -> return (string + "семь")
-        8 -> return (string + "восемь")
-        9 -> return (string + "девять")
-        0 -> return (string)
-    }
+    if (a != 0) string += list[27 + a]
+    if (b != 0) if (b == 1) return string + list[10 + c] else string += list[18 + b]
+    if (c != 0) return string + list[c]
     return string
 }
 
