@@ -299,6 +299,28 @@ class Tests {
                 )
             )
         )
+        assertEquals(
+            mapOf(
+                "Marat" to setOf("Mikhail", "Sveta", "Anton", "EvilGnome", "Vasya"),
+                "Sveta" to setOf("Marat", "Mikhail", "Anton", "EvilGnome", "Vasya"),
+                "Mikhail" to setOf("Sveta", "Marat", "Anton", "EvilGnome", "Vasya"),
+                "Friend" to setOf("GoodGnome"),
+                "Anton" to setOf("EvilGnome", "Vasya"),
+                "EvilGnome" to setOf("Vasya"),
+                "GoodGnome" to setOf(),
+                "Vasya" to setOf()
+            ),
+            propagateHandshakes(
+                mapOf(
+                    "Marat" to setOf("Mikhail", "Sveta"),
+                    "Sveta" to setOf("Marat", "Anton"),
+                    "Anton" to setOf("EvilGnome"),
+                    "Mikhail" to setOf("Sveta"),
+                    "Friend" to setOf("GoodGnome"),
+                    "EvilGnome" to setOf("Vasya")
+                )
+            )
+        )
     }
 
     @Test
@@ -311,6 +333,14 @@ class Tests {
         assertEquals(
             Pair(0, 2),
             findSumOfTwo(listOf(1, 2, 3), 4)
+        )
+        assertEquals(
+            Pair(1, 2),
+            findSumOfTwo(listOf(1, 2, 2), 4)
+        )
+        assertEquals(
+            Pair(1, 5),
+            findSumOfTwo(listOf(1, 2, 1, 1, 1, 2), 4)
         )
         assertEquals(
             Pair(-1, -1),
