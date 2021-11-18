@@ -3,7 +3,6 @@
 package lesson6.task1
 
 import java.lang.Exception
-import java.lang.reflect.Executable
 import kotlin.math.max
 
 // Урок 6: разбор строк, исключения
@@ -278,7 +277,7 @@ fun firstDuplicateIndex(str: String): Int {
     val words = str.lowercase().split(" ")
     var c = 0
     for (i in 0..words.size - 2) {
-        if (words[i]!=words[i+1]) c += words[i].length + 1
+        if (words[i] != words[i + 1]) c += words[i].length + 1
         else return c
     }
     return -1
@@ -295,7 +294,24 @@ fun firstDuplicateIndex(str: String): Int {
  * или пустую строку при нарушении формата строки.
  * Все цены должны быть больше нуля либо равны нулю.
  */
-fun mostExpensive(description: String): String = TODO()
+fun mostExpensive(description: String): String {
+    try {
+        val product = description.split("; ")
+        var max = 0.0
+        var name = ""
+        for (word in product) {
+            val w = word.split(" ")
+            if (w.size != 2) return ""
+            if (max < w[1].toDouble()) {
+                max = w[1].toDouble()
+                name = w[0]
+            }
+        }
+        return name
+    } catch (e: Exception) {
+        return ""
+    }
+}
 
 /**
  * Сложная (6 баллов)
@@ -346,4 +362,42 @@ fun fromRoman(roman: String): Int = TODO()
  * IllegalArgumentException должен бросаться даже если ошибочная команда не была достигнута в ходе выполнения.
  *
  */
-fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> = TODO()
+fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
+    try {
+        var count = 0
+        val c = mutableListOf<Int>()
+        for (i in 0 until cells) c += 0
+        var i = (cells / 2)
+        var p = 0
+        val index = mutableListOf<Int>()
+        var c1 = 0
+        var c2 = 0
+        for (x in commands) {
+            if (x == '[') c1++
+            if (x == ']') c2++
+        }
+        if (c1 != c2 || commands.indexOf("]") < commands.indexOf("[")) throw IllegalArgumentException()
+        while (i in 0 until cells && count < limit && p < commands.length) {
+            when (commands[p]) {
+                '>' -> i++
+                '<' -> i--
+                '+' -> c[i]++
+                '-' -> c[i]--
+                '[' -> if (c[i] == 0) while (commands[p] != ']') p++ else index += p
+                ']' -> if (c[i] != 0) {
+                    p = index.last()
+                } else index -= index.last()
+                ' ' -> p += 0
+                else -> throw IllegalArgumentException()
+            }
+            count++
+            p++
+        }
+        if (i !in 0 until cells) throw IllegalStateException()
+        return c
+    } catch (e: IllegalArgumentException) {
+        throw IllegalArgumentException()
+    } catch (e: IllegalStateException) {
+        throw IllegalStateException()
+    }
+}
