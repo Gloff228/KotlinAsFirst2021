@@ -2,6 +2,10 @@
 
 package lesson6.task1
 
+import java.lang.Exception
+import java.lang.reflect.Executable
+import kotlin.math.max
+
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -74,7 +78,33 @@ fun main() {
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30.02.2009) считается неверными
  * входными данными.
  */
-fun dateStrToDigit(str: String): String = TODO()
+fun dateStrToDigit(str: String): String {
+    val days = mutableListOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    val months = mapOf<String, String>(
+        "января" to "01",
+        "февраля" to "02",
+        "марта" to "03",
+        "апреля" to "04",
+        "мая" to "05",
+        "июня" to "06",
+        "июля" to "07",
+        "августа" to "08",
+        "сентября" to "09",
+        "октября" to "10",
+        "ноября" to "11",
+        "декабря" to "12"
+    )
+    try {
+        val date = str.split(" ").toMutableList()
+        if (date[2].toInt() % 4 == 0) days[2] = 29
+        if (date[1] in months) date[1] = months[date[1]].toString()
+        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
+        return String.format("%02d.%02d.%d", date[0].toInt(), date[1].toInt(), date[2].toInt())
+
+    } catch (e: Exception) {
+        return ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -86,7 +116,33 @@ fun dateStrToDigit(str: String): String = TODO()
  * Обратите внимание: некорректная с точки зрения календаря дата (например, 30 февраля 2009) считается неверными
  * входными данными.
  */
-fun dateDigitToStr(digital: String): String = TODO()
+fun dateDigitToStr(digital: String): String {
+    val days = mutableListOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
+    val months = mapOf<String, String>(
+        "01" to "января",
+        "02" to "февраля",
+        "03" to "марта",
+        "04" to "апреля",
+        "05" to "мая",
+        "06" to "июня",
+        "07" to "июля",
+        "08" to "августа",
+        "09" to "сентября",
+        "10" to "октября",
+        "11" to "ноября",
+        "12" to "декабря"
+    )
+    try {
+        val date = digital.split(".").toMutableList()
+        if (date[2].toInt() % 4 == 0) days[2] = 29
+        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
+        date[1] = months[date[1]]!!
+        return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
+
+    } catch (e: Exception) {
+        return ""
+    }
+}
 
 /**
  * Средняя (4 балла)
@@ -102,7 +158,17 @@ fun dateDigitToStr(digital: String): String = TODO()
  *
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
-fun flattenPhoneNumber(phone: String): String = TODO()
+fun flattenPhoneNumber(phone: String): String {
+    try {
+        val num = "+0123456789"
+        if ("()" in phone || ("+" in phone && phone[0] != '+')) return ""
+        val n = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+        for (s in n) if (s !in num) return ""
+        return n
+    } catch (e: Exception) {
+        return ""
+    }
+}
 
 /**
  * Средняя (5 баллов)
@@ -114,7 +180,26 @@ fun flattenPhoneNumber(phone: String): String = TODO()
  * Прочитать строку и вернуть максимальное присутствующее в ней число (717 в примере).
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
-fun bestLongJump(jumps: String): Int = TODO()
+fun bestLongJump(jumps: String): Int {
+    try {
+        var max = 0
+        var a = ""
+        val n = jumps.replace("-", "").replace("%", "")
+        if (n.replace(" ", "") == "") return -1
+        for (s in n) if (s !in "0123456789 ") return -1
+        else {
+            if (s != ' ') a += s
+            else
+                if (a != "") {
+                    max = max(max, a.toInt())
+                    a = ""
+                }
+        }
+        return max(max, a.toInt())
+    } catch (e: Exception) {
+        return -1
+    }
+}
 
 /**
  * Сложная (6 баллов)
@@ -127,7 +212,26 @@ fun bestLongJump(jumps: String): Int = TODO()
  * При нарушении формата входной строки, а также в случае отсутствия удачных попыток,
  * вернуть -1.
  */
-fun bestHighJump(jumps: String): Int = TODO()
+fun bestHighJump(jumps: String): Int {
+    try {
+        var max = 0
+        var a = ""
+        val n = jumps.replace(" ", "")
+        if (n.replace("+", "").replace("-", "").replace("%", "") == "") return -1
+        for (s in n) if (s !in "0123456789+-%") return -1
+        else {
+            if (s !in "+-%") a += s
+            else
+                if (s == '+' && a != "")
+                    max = max(max, a.toInt())
+                else
+                    a = ""
+        }
+        return max
+    } catch (e: Exception) {
+        return -1
+    }
+}
 
 /**
  * Сложная (6 баллов)
@@ -138,7 +242,28 @@ fun bestHighJump(jumps: String): Int = TODO()
  * Вернуть значение выражения (6 для примера).
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
-fun plusMinus(expression: String): Int = TODO()
+fun plusMinus(expression: String): Int {
+    try {
+        var end = 0
+        var a = ""
+        var pm = '+'
+        val str = expression.replace(" ", "")
+        if (str.replace("+", "").replace("-", "") == "") return -1
+        for (s in str)
+            if (s != '+' && s != '-') a += s
+            else {
+                if (pm == '+') end += a.toInt()
+                if (pm == '-') end -= a.toInt()
+                a = ""
+                pm = s
+            }
+        if (pm == '+') end += a.toInt()
+        if (pm == '-') end -= a.toInt()
+        return end
+    } catch (e: Exception) {
+        throw IllegalArgumentException()
+    }
+}
 
 /**
  * Сложная (6 баллов)
