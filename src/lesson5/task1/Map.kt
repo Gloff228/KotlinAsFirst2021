@@ -102,12 +102,12 @@ fun buildWordSet(text: List<String>): MutableSet<String> {
  */
 fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
     val map = mutableMapOf<Int, List<String>>()
-    for (i in 2..5) {
-        val list = mutableListOf<String>()
-        for ((name, key) in grades) {
-            if (key == i) list.add(name)
+    for ((name, key) in grades) {
+        if (key !in map) map[key] = listOf(name)
+        else {
+            val a = map[key]
+            map[key] = a!! + name
         }
-        if (list.isNotEmpty()) map[i] = list.toList()
     }
     return map
 }
@@ -140,7 +140,7 @@ fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = (a + b
  */
 fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Map<String, String> {
     val c = mutableListOf<String>()
-    for ((key, _) in b) if (a[key] == b[key]) c.add(key)
+    for ((key, v) in b) if (a[key] == v) c.add(key)
     a -= c
     return a
 }
@@ -154,7 +154,7 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Map<Strin
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     val end = mutableListOf<String>()
-    for (word in a) if (word in b) end += word
+    for (word in a.toSet()) if (word in b.toSet()) end += word
     return end.toSet().toList()
 }
 
@@ -179,7 +179,7 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
     val end = (mapA + mapB).toMutableMap()
     for ((key, _) in mapA) if (mapA[key] != mapB[key] && mapB[key] != null)
         end[key] = (mapA[key] + ", " + mapB[key])
-    return end.toMap()
+    return end
 }
 
 /**
@@ -299,7 +299,7 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
     while (map != end) {
         map = end.toMap()
         for ((name, set) in map) {
-            for (n in set) end[name] = (end[name]!! + end[n] as Set<String>) - name
+            for (n in set) end[name] = (end[name]!! + end[n]!!) - name
         }
     }
     return end
@@ -323,12 +323,11 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    var i = 0
-    while (i <= list.size - 2) {
-        val a = number - list[i]
-        for (j in i + 1 until list.size)
-            if (a == list[j]) return Pair(i, j)
-        i++
+    val l = list.toSet()
+    for (num in l) {
+        val x = list.toMutableList()
+        x[x.indexOf(num)] = number + 1
+        if ((number - num) in x) return Pair(list.indexOf(num), x.indexOf(number - num))
     }
     return Pair(-1, -1)
 }
