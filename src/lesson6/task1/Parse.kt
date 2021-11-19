@@ -97,7 +97,7 @@ fun dateStrToDigit(str: String): String {
         val date = str.split(" ").toMutableList()
         if (date[2].toInt() % 4 == 0) days[2] = 29
         if (date[1] in months) date[1] = months[date[1]].toString()
-        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
+        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3 || date[2].length != 4) return ""
         return String.format("%02d.%02d.%d", date[0].toInt(), date[1].toInt(), date[2].toInt())
 
     } catch (e: Exception) {
@@ -134,7 +134,7 @@ fun dateDigitToStr(digital: String): String {
     try {
         val date = digital.split(".").toMutableList()
         if (date[2].toInt() % 4 == 0) days[2] = 29
-        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
+        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3 || date[2].length != 4) return ""
         date[1] = months[date[1]]!!
         return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
 
@@ -247,7 +247,7 @@ fun plusMinus(expression: String): Int {
         var a = ""
         var pm = '+'
         val str = expression.replace(" ", "")
-        if (str.replace("+", "").replace("-", "") == "") return -1
+        if (str.replace("+", "").replace("-", "") == "") throw IllegalArgumentException()
         for (s in str)
             if (s != '+' && s != '-') a += s
             else {
@@ -301,9 +301,10 @@ fun mostExpensive(description: String): String {
         var name = ""
         for (word in product) {
             val w = word.split(" ")
+            val cost = w[1].toDouble()
             if (w.size != 2) return ""
-            if (max < w[1].toDouble()) {
-                max = w[1].toDouble()
+            if (max <= cost) {
+                max = cost
                 name = w[0]
             }
         }
@@ -377,7 +378,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             if (x == ']') c2++
         }
         if (c1 != c2 || commands.indexOf("]") < commands.indexOf("[")) throw IllegalArgumentException()
-        while (i in 0 until cells && count < limit && p < commands.length) {
+        while (count < limit && p < commands.length) {
             when (commands[p]) {
                 '>' -> i++
                 '<' -> i--
@@ -397,7 +398,7 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         return c
     } catch (e: IllegalArgumentException) {
         throw IllegalArgumentException()
-    } catch (e: IllegalStateException) {
+    } catch (e: Exception) {
         throw IllegalStateException()
     }
 }
