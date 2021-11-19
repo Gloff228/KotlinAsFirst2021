@@ -97,7 +97,7 @@ fun dateStrToDigit(str: String): String {
         val date = str.split(" ").toMutableList()
         if (date[2].toInt() % 4 == 0) days[2] = 29
         if (date[1] in months) date[1] = months[date[1]].toString()
-        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3 || date[2].length != 4) return ""
+        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
         return String.format("%02d.%02d.%d", date[0].toInt(), date[1].toInt(), date[2].toInt())
 
     } catch (e: Exception) {
@@ -134,7 +134,7 @@ fun dateDigitToStr(digital: String): String {
     try {
         val date = digital.split(".").toMutableList()
         if (date[2].toInt() % 4 == 0) days[2] = 29
-        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3 || date[2].length != 4) return ""
+        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
         date[1] = months[date[1]]!!
         return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
 
@@ -396,9 +396,9 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
         }
         if (i !in 0 until cells) throw IllegalStateException()
         return c
-    } catch (e: IllegalArgumentException) {
-        throw IllegalArgumentException()
-    } catch (e: Exception) {
+    } catch (e: IllegalStateException) {
         throw IllegalStateException()
+    } catch (e: Exception) {
+        throw IllegalArgumentException()
     }
 }
