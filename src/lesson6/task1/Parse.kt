@@ -79,7 +79,7 @@ fun main() {
  */
 fun dateStrToDigit(str: String): String {
     val days = mutableListOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    val months = mapOf<String, String>(
+    val months = mapOf(
         "января" to "01",
         "февраля" to "02",
         "марта" to "03",
@@ -117,7 +117,7 @@ fun dateStrToDigit(str: String): String {
  */
 fun dateDigitToStr(digital: String): String {
     val days = mutableListOf(0, 31, 28, 31, 30, 31, 30, 31, 31, 30, 31, 30, 31)
-    val months = mapOf<String, String>(
+    val months = mapOf(
         "01" to "января",
         "02" to "февраля",
         "03" to "марта",
@@ -365,40 +365,49 @@ fun fromRoman(roman: String): Int = TODO()
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     try {
-        var count = 0
-        val c = mutableListOf<Int>()
-        for (i in 0 until cells) c += 0
-        var i = (cells / 2)
-        var p = 0
-        val index = mutableListOf<Int>()
         var c1 = 0
         var c2 = 0
         for (x in commands) {
+            if (x !in "><+-[] ") throw IllegalArgumentException()
             if (x == '[') c1++
             if (x == ']') c2++
         }
         if (c1 != c2 || commands.indexOf("]") < commands.indexOf("[")) throw IllegalArgumentException()
-        while (count < limit && p < commands.length) {
-            when (commands[p]) {
-                '>' -> i++
-                '<' -> i--
-                '+' -> c[i]++
-                '-' -> c[i]--
-                '[' -> if (c[i] == 0) while (commands[p] != ']') p++ else index += p
-                ']' -> if (c[i] != 0) {
-                    p = index.last()
-                } else index -= index.last()
-                ' ' -> p += 0
-                else -> throw IllegalArgumentException()
-            }
-            count++
-            p++
+        if (cells == 0) {
+            if (commands.replace(" ", "") == "" || limit == 0) return listOf()
+            else throw IllegalStateException()
         }
-        if (i !in 0 until cells) throw IllegalStateException()
+
+        val c = mutableListOf<Int>()
+        for (i in 0 until cells) c += 0
+
+        var step = 0
+        var cell = (cells / 2)
+        var commandNumber = 0
+        val index = mutableListOf<Int>()
+
+        while (step < limit && commandNumber < commands.length && cell in 0 until cells) {
+            when (commands[commandNumber]) {
+                '>' -> cell++
+                '<' -> cell--
+                '+' -> c[cell]++
+                '-' -> c[cell]--
+                '[' -> if (c[cell] == 0) while (commands[commandNumber] != ']') commandNumber++ else index += commandNumber
+                ']' -> if (c[cell] != 0) {
+                    commandNumber = index.last()
+                } else index -= index.last()
+                ' ' -> commandNumber += 0
+            }
+            step++
+            commandNumber++
+        }
+
+        if (cell !in 0 until cells) throw IllegalStateException()
         return c
+
     } catch (e: IllegalStateException) {
         throw IllegalStateException()
-    } catch (e: Exception) {
+    } catch (e: IllegalArgumentException) {
         throw IllegalArgumentException()
     }
 }
