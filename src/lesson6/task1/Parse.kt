@@ -95,7 +95,7 @@ fun dateStrToDigit(str: String): String {
     )
     try {
         val date = str.split(" ").toMutableList()
-        if (date[2].toInt() % 4 == 0 && date[2].toInt() / 100 % 4 == 0) days[2] = 29
+        if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
         if (date[1] in months) date[1] = months[date[1]].toString()
         if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
         return String.format("%02d.%02d.%d", date[0].toInt(), date[1].toInt(), date[2].toInt())
@@ -133,7 +133,7 @@ fun dateDigitToStr(digital: String): String {
     )
     try {
         val date = digital.split(".").toMutableList()
-        if (date[2].toInt() % 4 == 0 && date[2].toInt() / 100 % 4 == 0) days[2] = 29
+        if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
         if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
         date[1] = months[date[1]]!!
         return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
@@ -364,50 +364,45 @@ fun fromRoman(roman: String): Int = TODO()
  *
  */
 fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
-    try {
-        var c1 = 0
-        var c2 = 0
-        for (x in commands) {
-            if (x !in "><+-[] ") throw IllegalArgumentException()
-            if (x == '[') c1++
-            if (x == ']') c2++
-        }
-        if (c1 != c2 || commands.indexOf("]") < commands.indexOf("[")) throw IllegalArgumentException()
-        if (cells == 0) {
-            if (commands.replace(" ", "") == "" || limit == 0) return listOf()
-            else throw IllegalStateException()
-        }
-
-        val c = mutableListOf<Int>()
-        for (i in 0 until cells) c += 0
-
-        var step = 0
-        var cell = (cells / 2)
-        var commandNumber = 0
-        val index = mutableListOf<Int>()
-
-        while (step < limit && commandNumber < commands.length && cell in 0 until cells) {
-            when (commands[commandNumber]) {
-                '>' -> cell++
-                '<' -> cell--
-                '+' -> c[cell]++
-                '-' -> c[cell]--
-                '[' -> if (c[cell] == 0) while (commands[commandNumber] != ']') commandNumber++ else index += commandNumber
-                ']' -> if (c[cell] != 0) {
-                    commandNumber = index.last()
-                } else index -= index.last()
-                ' ' -> commandNumber += 0
-            }
-            step++
-            commandNumber++
-        }
-
-        if (cell !in 0 until cells) throw IllegalStateException()
-        return c
-
-    } catch (e: IllegalArgumentException) {
-        throw IllegalArgumentException()
-    } catch (e: Exception) {
-        throw IllegalStateException()
+    var c1 = 0
+    var c2 = 0
+    for (x in commands) {
+        if (x !in "><+-[] ") throw IllegalArgumentException()
+        if (x == '[') c1++
+        if (x == ']') c2++
+        if (c2 > c1) throw IllegalArgumentException()
     }
+    if (c1 != c2 || commands.indexOf("]") < commands.indexOf("[")) throw IllegalArgumentException()
+    if (cells == 0) {
+        if (commands.replace(" ", "") == "" || limit == 0) return listOf()
+        else throw IllegalStateException()
+    }
+
+    val c = mutableListOf<Int>()
+    for (i in 0 until cells) c += 0
+
+    var step = 0
+    var cell = (cells / 2)
+    var commandNumber = 0
+    val index = mutableListOf<Int>()
+
+    while (step < limit && commandNumber < commands.length && cell in 0 until cells) {
+        when (commands[commandNumber]) {
+            '>' -> cell++
+            '<' -> cell--
+            '+' -> c[cell]++
+            '-' -> c[cell]--
+            '[' -> if (c[cell] == 0) while (commands[commandNumber] != ']') commandNumber++ else index += commandNumber
+            ']' -> if (c[cell] != 0) {
+                commandNumber = index.last()
+            } else index -= index.last()
+            ' ' -> commandNumber += 0
+        }
+        step++
+        commandNumber++
+    }
+
+    if (cell !in 0 until cells) throw IllegalStateException()
+    return c
 }
+

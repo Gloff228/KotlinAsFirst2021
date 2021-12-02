@@ -154,7 +154,9 @@ fun subtractOf(a: MutableMap<String, String>, b: Map<String, String>): Map<Strin
  */
 fun whoAreInBoth(a: List<String>, b: List<String>): List<String> {
     val end = mutableListOf<String>()
-    for (word in a.toSet()) if (word in b.toSet()) end += word
+    val setA = a.toSet()
+    val setB = b.toSet()
+    for (word in setA) if (word in setB) end += word
     return end.toSet().toList()
 }
 
@@ -323,11 +325,12 @@ fun propagateHandshakes(friends: Map<String, Set<String>>): Map<String, Set<Stri
  *   findSumOfTwo(listOf(1, 2, 3), 6) -> Pair(-1, -1)
  */
 fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
-    val l = list.toSet()
-    for (num in l) {
-        val x = list.toMutableList()
-        x[x.indexOf(num)] = number + 1
-        if ((number - num) in x) return Pair(list.indexOf(num), x.indexOf(number - num))
+    val map = mutableMapOf<Int, Int>()
+    for ((i, num1) in list.withIndex()) {
+        when (val num2 = map[number - num1]) {
+            null -> map[num1] = i
+            else -> return Pair(num2, i)
+        }
     }
     return Pair(-1, -1)
 }
