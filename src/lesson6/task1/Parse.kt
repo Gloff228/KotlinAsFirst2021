@@ -2,7 +2,6 @@
 
 package lesson6.task1
 
-import java.lang.Exception
 import kotlin.math.max
 
 // Урок 6: разбор строк, исключения
@@ -93,16 +92,12 @@ fun dateStrToDigit(str: String): String {
         "ноября" to "11",
         "декабря" to "12"
     )
-    try {
-        val date = str.split(" ").toMutableList()
-        if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
-        if (date[1] in months) date[1] = months[date[1]].toString()
-        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
-        return String.format("%02d.%02d.%d", date[0].toInt(), date[1].toInt(), date[2].toInt())
-
-    } catch (e: Exception) {
-        return ""
-    }
+    val date = str.split(" ").toMutableList()
+    if (date.size != 3 || date[1] !in months) return ""
+    if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
+    date[1] = months[date[1]].toString()
+    if (date[0].toInt() > days[date[1].toInt()]) return ""
+    return String.format("%02d.%02d.%d", date[0].toInt(), date[1].toInt(), date[2].toInt())
 }
 
 /**
@@ -131,16 +126,12 @@ fun dateDigitToStr(digital: String): String {
         "11" to "ноября",
         "12" to "декабря"
     )
-    try {
-        val date = digital.split(".").toMutableList()
-        if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
-        if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
-        date[1] = months[date[1]]!!
-        return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
-
-    } catch (e: Exception) {
-        return ""
-    }
+    val date = digital.split(".").toMutableList()
+    for (word in date) for (char in word) if (char !in "0123456789") return ""
+    if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
+    if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
+    date[1] = months[date[1]]!!
+    return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
 }
 
 /**
@@ -158,15 +149,11 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    try {
-        val num = "+0123456789"
-        if ("()" in phone || ("+" in phone && phone[0] != '+')) return ""
-        val n = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
-        for (s in n) if (s !in num) return ""
-        return n
-    } catch (e: Exception) {
-        return ""
-    }
+    val num = "+0123456789"
+    if ("()" in phone || ("+" in phone && phone[0] != '+')) return ""
+    val n = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
+    for (s in n) if (s !in num) return ""
+    return n
 }
 
 /**
@@ -180,24 +167,20 @@ fun flattenPhoneNumber(phone: String): String {
  * При нарушении формата входной строки или при отсутствии в ней чисел, вернуть -1.
  */
 fun bestLongJump(jumps: String): Int {
-    try {
-        var max = 0
-        var a = ""
-        val n = jumps.replace("-", "").replace("%", "")
-        if (n.replace(" ", "") == "") return -1
-        for (s in n) if (s !in "0123456789 ") return -1
-        else {
-            if (s != ' ') a += s
-            else
-                if (a != "") {
-                    max = max(max, a.toInt())
-                    a = ""
-                }
-        }
-        return max(max, a.toInt())
-    } catch (e: Exception) {
-        return -1
+    var max = 0
+    var a = ""
+    val n = jumps.replace("-", "").replace("%", "")
+    if (n.replace(" ", "") == "") return -1
+    for (s in n) if (s !in "0123456789 ") return -1
+    else {
+        if (s != ' ') a += s
+        else
+            if (a != "") {
+                max = max(max, a.toInt())
+                a = ""
+            }
     }
+    return max(max, a.toInt())
 }
 
 /**
@@ -212,24 +195,20 @@ fun bestLongJump(jumps: String): Int {
  * вернуть -1.
  */
 fun bestHighJump(jumps: String): Int {
-    try {
-        var max = 0
-        var a = ""
-        val n = jumps.replace(" ", "")
-        if (n.replace("+", "").replace("-", "").replace("%", "") == "") return -1
-        for (s in n) if (s !in "0123456789+-%") return -1
-        else {
-            if (s !in "+-%") a += s
+    var max = 0
+    var a = ""
+    val n = jumps.replace(" ", "")
+    if (n.replace("+", "").replace("-", "").replace("%", "") == "") return -1
+    for (s in n) if (s !in "0123456789+-%") return -1
+    else {
+        if (s !in "+-%") a += s
+        else
+            if (s == '+' && a != "")
+                max = max(max, a.toInt())
             else
-                if (s == '+' && a != "")
-                    max = max(max, a.toInt())
-                else
-                    a = ""
-        }
-        return max
-    } catch (e: Exception) {
-        return -1
+                a = ""
     }
+    return max
 }
 
 /**
@@ -242,26 +221,22 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    try {
-        var end = 0
-        var a = ""
-        var pm = '+'
-        val str = expression.replace(" ", "")
-        if (str.replace("+", "").replace("-", "") == "") throw IllegalArgumentException()
-        for (s in str)
-            if (s != '+' && s != '-') a += s
-            else {
-                if (pm == '+') end += a.toInt()
-                if (pm == '-') end -= a.toInt()
-                a = ""
-                pm = s
-            }
-        if (pm == '+') end += a.toInt()
-        if (pm == '-') end -= a.toInt()
-        return end
-    } catch (e: Exception) {
-        throw IllegalArgumentException()
-    }
+    var end = 0
+    var a = ""
+    var pm = '+'
+    val str = expression.replace(" ", "")
+    if (str.replace("+", "").replace("-", "") == "") throw IllegalArgumentException()
+    for (s in str)
+        if (s != '+' && s != '-') a += s
+        else {
+            if (pm == '+') end += a.toInt()
+            if (pm == '-') end -= a.toInt()
+            a = ""
+            pm = s
+        }
+    if (pm == '+') end += a.toInt()
+    if (pm == '-') end -= a.toInt()
+    return end
 }
 
 /**
@@ -295,23 +270,21 @@ fun firstDuplicateIndex(str: String): Int {
  * Все цены должны быть больше нуля либо равны нулю.
  */
 fun mostExpensive(description: String): String {
-    try {
-        val product = description.split("; ")
-        var max = 0.0
-        var name = ""
-        for (word in product) {
-            val w = word.split(" ")
-            val cost = w[1].toDouble()
-            if (w.size != 2) return ""
-            if (max <= cost) {
-                max = cost
-                name = w[0]
-            }
+    if (description.isEmpty()) return ""
+    val product = description.split("; ")
+    var max = 0.0
+    var name = ""
+    for (word in product) {
+        val w = word.split(" ")
+        val cost = w[1].toDouble()
+        if (w.size != 2) return ""
+        if (max <= cost) {
+            max = cost
+            name = w[0]
         }
-        return name
-    } catch (e: Exception) {
-        return ""
     }
+    return name
+
 }
 
 /**

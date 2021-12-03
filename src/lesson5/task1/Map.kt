@@ -122,7 +122,10 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "z", "b" to "sweet")) -> true
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
-fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean = (a + b == b + a)
+fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
+    if (a.isNotEmpty() && b.isNotEmpty() && (a + b == b + a)) return true
+    return false
+}
 
 /**
  * Простая (2 балла)
@@ -196,9 +199,16 @@ fun mergePhoneBooks(mapA: Map<String, String>, mapB: Map<String, String>): Map<S
  */
 fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Double> {
     val end = mutableMapOf<String, Double>()
+    val count = mutableMapOf<String, Int>()
     for ((name, cost) in stockPrices)
-        if (end[name] == null) end[name] = cost
-        else end[name] = (end[name]!! + cost) / 2
+        if (end[name] == null) {
+            end[name] = cost
+            count[name] = 1
+        } else {
+            end[name] = end[name]!! * count[name]!! + cost
+            count[name] = count[name]!! + 1
+            end[name] = end[name]!! / count[name]!!
+        }
     return end
 }
 
