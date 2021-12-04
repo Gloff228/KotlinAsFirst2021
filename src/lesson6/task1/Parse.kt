@@ -128,8 +128,9 @@ fun dateDigitToStr(digital: String): String {
     )
     val date = digital.split(".").toMutableList()
     for (word in date) for (char in word) if (char !in "0123456789") return ""
+    if (date[1] !in months || date.size != 3) return ""
     if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
-    if (date[0].toInt() > days[date[1].toInt()] || date.size != 3) return ""
+    if (date[0].toInt() > days[date[1].toInt()]) return ""
     date[1] = months[date[1]]!!
     return String.format("%d %s %s", date[0].toInt(), date[1], date[2])
 }
