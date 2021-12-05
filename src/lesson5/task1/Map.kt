@@ -2,8 +2,6 @@
 
 package lesson5.task1
 
-import kotlin.math.*
-
 fun main() {
 }
 // Урок 5: ассоциативные массивы и множества
@@ -123,7 +121,7 @@ fun buildGrades(grades: Map<String, Int>): Map<Int, List<String>> {
  *   containsIn(mapOf("a" to "z"), mapOf("a" to "zee", "b" to "sweet")) -> false
  */
 fun containsIn(a: Map<String, String>, b: Map<String, String>): Boolean {
-    if (a + b == b + a) if (a.isEmpty() && b.isEmpty() || a.isNotEmpty() && b.isNotEmpty()) return true
+    if (a + b == b + a) if (a.isEmpty() || (a.isNotEmpty() && b.isNotEmpty())) return true
     return false
 }
 
@@ -367,4 +365,22 @@ fun findSumOfTwo(list: List<Int>, number: Int): Pair<Int, Int> {
  *   ) -> emptySet()
  */
 
-fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> = TODO()
+fun bagPacking(treasures: Map<String, Pair<Int, Int>>, capacity: Int): Set<String> {
+    val list = treasures.toList()
+    val x = MutableList(1 + treasures.count()) { MutableList(capacity + 1) { 0 to setOf<String>() } }
+    for (i in 1..x.lastIndex) {
+        val treasure = list[i - 1]
+        val name = treasure.first
+        val (weight, value) = treasure.second
+        for (j in x[i].indices) {
+            if (weight > j) {
+                x[i][j] = x[i - 1][j]
+            } else {
+                val treasure1 = x[i - 1][j]
+                val treasure2 = (x[i - 1][j - weight].first + value) to (x[i - 1][j - weight].second + name)
+                x[i][j] = listOf(treasure1, treasure2).maxByOrNull { it.first }!!
+            }
+        }
+    }
+    return x[treasures.count()][capacity].second
+}
