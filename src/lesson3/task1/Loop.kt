@@ -101,6 +101,7 @@ fun fib(n: Int): Int {
     }
     return end
 }
+
 /**
  * Простая (2 балла)
  *
@@ -157,14 +158,13 @@ fun collatzSteps(x: Int): Int {
  * минимальное число k, которое делится и на m и на n без остатка
  */
 
-fun mind(m: Int, n: Int): Int {
-    for (i in (sqrt(min(m, n).toDouble())).toInt() downTo 2) if (n % i == 0 && m % i == 0) return i
-    return 1
-}
-
 fun lcm(m: Int, n: Int): Int {
     if (max(m, n) % min(m, n) == 0) return max(m, n)
-    return m * n / mind(m, n)
+    var k = max(m, n) * 2
+    while (k % m != 0 || k % n != 0) {
+        k += max(m, n)
+    }
+    return k
 }
 
 /**
@@ -174,6 +174,11 @@ fun lcm(m: Int, n: Int): Int {
  * Взаимно простые числа не имеют общих делителей, кроме 1.
  * Например, 25 и 49 взаимно простые, а 6 и 8 -- нет.
  */
+fun mind(m: Int, n: Int): Int {
+    for (i in (sqrt(min(m, n).toDouble())).toInt() downTo 2) if (n % i == 0 && m % i == 0) return i
+    return 1
+}
+
 fun isCoPrime(m: Int, n: Int): Boolean = max(m, n) % min(m, n) != 0 && (mind(n, m) == 1) || n == 1 || m == 1
 
 /**
