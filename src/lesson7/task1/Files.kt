@@ -3,6 +3,7 @@
 package lesson7.task1
 
 import java.io.File
+import java.util.*
 
 // Урок 7: работа с файлами
 // Урок интегральный, поэтому его задачи имеют сильно увеличенную стоимость
@@ -258,9 +259,9 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             var string = ""
             for (char in line) {
                 val c = char.lowercase()
-                if (c in map) if (c.uppercase() == char.toString()) {
-                    string += map[c]!!.capitalize()
-                } else string += map[c]
+                if (c in map) string += if (c.uppercase() == char.toString()) {
+                    map[c]!!.replaceFirstChar { it.uppercase() }
+                } else map[c]
                 else string += char
             }
             writer.write(string)
