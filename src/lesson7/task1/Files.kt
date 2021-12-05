@@ -259,7 +259,7 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
             var string = ""
             for (char in line) {
                 val c = char.lowercase()
-                if (c in map) string += if (c.uppercase() == char.toString()) {
+                if (c in map) string += if (c.uppercase() == char.toString() && c.uppercase() != c.lowercase()) {
                     map[c]!!.replaceFirstChar { it.uppercase() }
                 } else map[c]
                 else string += char
