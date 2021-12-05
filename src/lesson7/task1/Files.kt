@@ -252,18 +252,17 @@ fun transliterate(inputName: String, dictionary: Map<Char, String>, outputName: 
     val map = mutableMapOf<String, String>()
     for ((c1, c2) in dictionary) map[c1.lowercase()] = c2.lowercase()
     val writer = File(outputName).bufferedWriter()
-    for (l in File(inputName).readLines()) {
-        if (l.isEmpty()) writer.newLine()
+    for (line in File(inputName).readLines()) {
+        if (line.isEmpty()) writer.newLine()
         else {
-            val line = l.lowercase()
             var string = ""
             for (char in line) {
-                val c = char.toString()
-                if (c in map) string += map[c]
+                val c = char.lowercase()
+                if (c in map) if (c.uppercase() == char.toString()) {
+                    string += map[c]!!.capitalize()
+                } else string += map[c]
                 else string += char
             }
-            if (l[0].uppercaseChar() == l[0]) string =
-                string.replaceFirst(string[0], string[0].uppercaseChar())
             writer.write(string)
             writer.newLine()
         }
