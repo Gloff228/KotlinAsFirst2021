@@ -94,6 +94,7 @@ fun dateStrToDigit(str: String): String {
     )
     val date = str.split(" ").toMutableList()
     if (str.isEmpty() || date.size != 3 || date[1] !in months) return ""
+    if (date[0].toIntOrNull() == null || date[2].toIntOrNull() == null) return ""
     if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
     date[1] = months[date[1]].toString()
     if (date[0].toInt() > days[date[1].toInt()]) return ""
@@ -127,7 +128,7 @@ fun dateDigitToStr(digital: String): String {
         "12" to "декабря"
     )
     val date = digital.split(".").toMutableList()
-    for (word in date) for (char in word) if (char !in "0123456789") return ""
+    for (word in date) for (char in word) if (!char.isDigit()) return ""
     if (digital.isEmpty() || date.size != 3 || date[1] !in months) return ""
     if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
     if (date[0].toInt() > days[date[1].toInt()]) return ""
@@ -150,10 +151,10 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    val num = "+0123456789"
+    val num = "+0123456789".toSet()
     if ("()" in phone || ("+" in phone && phone[0] != '+')) return ""
     val n = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
-    for (s in n) if (s !in num) return ""
+    for (s in n.toSet()) if (s !in num) return ""
     return n
 }
 
@@ -169,19 +170,13 @@ fun flattenPhoneNumber(phone: String): String {
  */
 fun bestLongJump(jumps: String): Int {
     var max = 0
-    var a = ""
+    val string = jumps.split(" ")
+    for (i in string) if (i !in "-%" && (i.toIntOrNull() == null || i.toInt() < 0)) return -1
     val n = jumps.replace("-", "").replace("%", "")
-    if (n.replace(" ", "") == "") return -1
-    for (s in n) if (s !in "0123456789 ") return -1
-    else {
-        if (s != ' ') a += s
-        else
-            if (a != "") {
-                max = max(max, a.toInt())
-                a = ""
-            }
-    }
-    return max(max, a.toInt())
+    if (n.isBlank()) return -1
+    val x = n.split(" ").toSet()
+    for (i in x) if (i.toIntOrNull() != null && i.toInt() > max) max = i.toInt()
+    return max
 }
 
 /**
@@ -197,17 +192,16 @@ fun bestLongJump(jumps: String): Int {
  */
 fun bestHighJump(jumps: String): Int {
     var max = 0
-    var a = ""
-    val n = jumps.replace(" ", "")
-    if (n.replace("+", "").replace("-", "").replace("%", "") == "") return -1
-    for (s in n) if (s !in "0123456789+-%") return -1
-    else {
-        if (s !in "+-%") a += s
-        else
-            if (s == '+' && a != "")
-                max = max(max, a.toInt())
-            else
-                a = ""
+    val string = jumps.split(" ")
+    if (string.size % 2 != 0) return -1
+    for (i in string) if (i.replace("+", "").replace("-", "").replace("%", "")
+            .isNotBlank() && (i.toIntOrNull() == null || i.toInt() < 0 || (i.toIntOrNull() != null && i[0] == '+'))
+    ) return -1
+    var i = 0
+    while (i < string.size - 1) {
+        if (string[i + 1][0] == '+' && string[i].toIntOrNull() != null && max < string[i].toInt()) max =
+            string[i].toInt()
+        i += 2
     }
     return max
 }
@@ -222,21 +216,17 @@ fun bestHighJump(jumps: String): Int {
  * Про нарушении формата входной строки бросить исключение IllegalArgumentException
  */
 fun plusMinus(expression: String): Int {
-    var end = 0
-    var a = ""
-    var pm = '+'
-    val str = expression.replace(" ", "")
-    if (str.replace("+", "").replace("-", "") == "") throw IllegalArgumentException()
-    for (s in str)
-        if (s != '+' && s != '-') a += s
-        else {
-            if (pm == '+') end += a.toInt()
-            if (pm == '-') end -= a.toInt()
-            a = ""
-            pm = s
-        }
-    if (pm == '+') end += a.toInt()
-    if (pm == '-') end -= a.toInt()
+    val str = expression.split(" ")
+    val x = expression.replace("+", "").replace("-", "").replace(" ", "")
+    if (x.isBlank() || x.toIntOrNull() == null || str[0].toIntOrNull() == null || str[0][0] in "+-") throw IllegalArgumentException()
+    var end = str[0].toInt()
+    var i = 1
+    while (i < str.size - 1) {
+        if (str[i + 1].toIntOrNull() == null || str[i + 1][0] in "+-") throw IllegalArgumentException()
+        if (str[i] == "+") end += str[i + 1].toInt()
+        else if (str[i] == "-") end -= str[i + 1].toInt()
+        i += 2
+    }
     return end
 }
 
@@ -277,8 +267,8 @@ fun mostExpensive(description: String): String {
     var name = ""
     for (word in product) {
         val w = word.split(" ")
+        if (w.size != 2 || w[1].toDoubleOrNull() == null) return ""
         val cost = w[1].toDouble()
-        if (w.size != 2) return ""
         if (max <= cost) {
             max = cost
             name = w[0]

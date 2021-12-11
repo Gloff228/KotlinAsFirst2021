@@ -200,10 +200,12 @@ fun averageStockPrice(stockPrices: List<Pair<String, Double>>): Map<String, Doub
             end[name] = cost
             count[name] = 1
         } else {
-            end[name] = end[name]!! * count[name]!! + cost
+            end[name] = end[name]!! + cost
             count[name] = count[name]!! + 1
-            end[name] = end[name]!! / count[name]!!
         }
+    for ((name, cost) in end) {
+        end[name] = cost / count[name]!!
+    }
     return end
 }
 
