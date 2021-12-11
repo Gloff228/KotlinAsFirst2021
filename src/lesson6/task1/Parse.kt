@@ -218,7 +218,7 @@ fun bestHighJump(jumps: String): Int {
 fun plusMinus(expression: String): Int {
     val str = expression.split(" ")
     val x = expression.replace("+", "").replace("-", "").replace(" ", "")
-    if (x.isBlank() || x.toIntOrNull() == null || str[0].toIntOrNull() == null || str[0][0] in "+-") throw IllegalArgumentException()
+    if (x.isBlank() || x.toLongOrNull() == null || str[0].toIntOrNull() == null || str[0][0] in "+-") throw IllegalArgumentException()
     var end = str[0].toInt()
     var i = 1
     while (i < str.size - 1) {
