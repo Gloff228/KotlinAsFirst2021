@@ -2,8 +2,6 @@
 
 package lesson6.task1
 
-import kotlin.math.max
-
 // Урок 6: разбор строк, исключения
 // Максимальное количество баллов = 13
 // Рекомендуемое количество баллов = 11
@@ -349,7 +347,8 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
     var step = 0
     var cell = (cells / 2)
     var commandNumber = 0
-    val index = mutableListOf<Int>()
+    val index = ArrayDeque<Int>()
+    val loop = mutableMapOf<Int, Int>()
 
     while (step < limit && commandNumber < commands.length && cell in 0 until cells) {
         when (commands[commandNumber]) {
@@ -358,12 +357,19 @@ fun computeDeviceCells(cells: Int, commands: String, limit: Int): List<Int> {
             '+' -> c[cell]++
             '-' -> c[cell]--
             '[' -> if (c[cell] == 0) {
-                var cc = 1
-                while (cc > 0) {
-                    commandNumber++
-                    if (commands[commandNumber] == '[') cc++
-                    if (commands[commandNumber] == ']') cc--
+                commandNumber = loop.getOrPut(commandNumber) {
+                    var x = commandNumber
+                    var cc = 1
+                    while (cc != 0) {
+                        x++
+                        when (commands[x]) {
+                            '[' -> cc++
+                            ']' -> cc--
+                        }
+                    }
+                    x
                 }
+
             } else index += commandNumber
             ']' -> if (c[cell] != 0) {
                 commandNumber = index.last()
