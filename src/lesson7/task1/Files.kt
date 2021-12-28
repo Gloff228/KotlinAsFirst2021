@@ -515,3 +515,94 @@ fun printDivisionProcess(lhv: Int, rhv: Int, outputName: String) {
     TODO()
 }
 
+
+fun pathTrace(inputName: String): String {
+    // -1 - Препятствие
+    // -2 - Ячейка не помечена
+    // Все остальное - количество ходов
+    val field = mutableListOf<MutableList<Int>>()
+    var fieldLen: Int? = null
+
+    var target = -1 to -1
+    val marked = mutableListOf<Pair<Int, Int>>()
+
+    for ((y, line) in File(inputName).readLines().withIndex()) {
+        if (fieldLen == null) fieldLen = line.length
+        if (fieldLen != line.length) throw IllegalArgumentException("Field rows have different number of columns")
+        val row = mutableListOf<Int>()
+
+        for ((x, cell) in line.withIndex())
+            when (cell) {
+                '#' -> row.add(-1)
+                '.' -> row.add(-2)
+                '*' -> if (marked.isEmpty()) {
+                    marked.add(y to x)
+                    row.add(0)
+                } else throw IllegalArgumentException("More than one starting point at ($y, $x)")
+                '^' -> if (target == -1 to -1) {
+                    target = y to x
+                    row.add(-2)
+                } else throw IllegalArgumentException("More than one target at ($y, $x)")
+                else -> throw IllegalArgumentException("Illegal cell identifier: $cell")
+            }
+        field.add(row)
+    }
+
+    if (target == -1 to -1) throw IllegalArgumentException("Input field contains no target.")
+    if (marked.isEmpty()) throw IllegalArgumentException("Input field contains no starting point.")
+
+    var targetFound = false
+    while (!targetFound) {
+        val oldMarkedSize = marked.size
+        for (i in marked.indices) {
+            val (y, x) = marked[i]
+            val markCandidates = listOf(
+                y + 1 to x,
+                y - 1 to x,
+                y to x - 1,
+                y to x + 1
+            )
+
+            for ((markY, markX) in markCandidates) {
+                if (markY in field.indices
+                    && markX in field[y].indices
+                    && field[markY][markX] == -2
+                ) {
+                    if (markY to markX == target) targetFound = true
+                    field[markY][markX] = field[y][x] + 1
+                    marked.add(markY to markX)
+                }
+            }
+        }
+        // Если мы не смогли пометить ничего нового, значит решения нет
+        if (marked.size == oldMarkedSize) throw IllegalStateException("No solution is possible")
+    }
+
+
+    val startingPoint = marked[0]
+    var goingFrom = target
+    var path = ""
+
+    while (goingFrom != startingPoint) {
+        val (y, x) = goingFrom
+        val currentSteps = field[y][x]
+        // Направления перевернуты так как мы идем от B до A, но строим путь A до B
+        val directionCandidates = listOf(
+            "l" to (y to x + 1),
+            "r" to (y to x - 1),
+            "u" to (y + 1 to x),
+            "d" to (y - 1 to x)
+        )
+
+        for ((direction, coordinates) in directionCandidates) {
+            val (newY, newX) = coordinates
+            if (newY in field.indices && newX in field[newY].indices && field[newY][newX] == currentSteps - 1) {
+                goingFrom = coordinates
+                path += direction
+                break
+            }
+        }
+    }
+
+    return path.reversed()
+}

@@ -1,6 +1,8 @@
 package lesson7.task1
 
 import org.junit.jupiter.api.Assertions.assertEquals
+import org.junit.jupiter.api.Assertions.assertThrows
+import org.junit.jupiter.api.Assertions.assertTrue
 import org.junit.jupiter.api.Tag
 import org.junit.jupiter.api.Test
 import java.io.File
@@ -440,5 +442,19 @@ Basic, Ruby, Swift.
         )
 
         File("temp.txt").delete()
+    }
+
+    @Test
+    fun pathTrace() {
+        assertEquals("r", pathTrace("input/field_0.txt"))
+        assertEquals("rrruuulll", pathTrace("input/field_1.txt"))
+        assertTrue { pathTrace("input/field_2.txt") in listOf("lluluuurr", "llluuuurr") }
+        assertThrows(IllegalStateException::class.java) { pathTrace("input/field_impossible.txt") } //нет пути до цели
+        assertThrows(IllegalArgumentException::class.java) { pathTrace("input/field_no_target.txt") } // нет цели
+        assertThrows(IllegalArgumentException::class.java) { pathTrace("input/field_no_starting_point.txt") } // нет начальной точки
+        assertThrows(IllegalArgumentException::class.java) { pathTrace("input/field_two_starting_point.txt") } // две начальные точки
+        assertThrows(IllegalArgumentException::class.java) { pathTrace("input/field_two_ending_point.txt") } // две конечные точки
+        assertThrows(IllegalArgumentException::class.java) { pathTrace("input/field_different_rows.txt") } // строки разной длинны
+        assertThrows(IllegalArgumentException::class.java) { pathTrace("input/field_wrong_digit.txt") } // неверный символ
     }
 }

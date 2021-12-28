@@ -92,7 +92,7 @@ fun dateStrToDigit(str: String): String {
     )
     val date = str.split(" ").toMutableList()
     if (str.isEmpty() || date.size != 3 || date[1] !in months) return ""
-    if (date[0].toIntOrNull() == null || date[2].toIntOrNull() == null) return ""
+    if (date[0].toIntOrNull() == null || date[2].toIntOrNull() == null || date[0].toInt() <= 0 || date[2].toInt() <= 0) return ""
     if (date[2].toInt() % 4 == 0 && date[2].toInt() % 100 != 0 || date[2].toInt() % 400 == 0) days[2] = 29
     date[1] = months[date[1]].toString()
     if (date[0].toInt() > days[date[1].toInt()]) return ""
@@ -149,8 +149,18 @@ fun dateDigitToStr(digital: String): String {
  * PS: Дополнительные примеры работы функции можно посмотреть в соответствующих тестах.
  */
 fun flattenPhoneNumber(phone: String): String {
-    val num = "+0123456789".toSet()
+    val num = "+0123456789".toSet() 
     if ("()" in phone || ("+" in phone && phone[0] != '+')) return ""
+    var l = 0
+    var c = 0
+    for (i in phone) {
+        if (i == '(') {
+            l++
+            c++
+        }
+        if (i == ')') l--
+        if (c > 1 || l == 1 && i == ' ') return ""
+    }
     val n = phone.replace(" ", "").replace("-", "").replace("(", "").replace(")", "")
     for (s in n.toSet()) if (s !in num) return ""
     return n
