@@ -14,6 +14,11 @@ internal class PhoneBookTest {
         assertTrue(book.addHuman("Иванов Петр"))
         assertTrue(book.addHuman("Васильев Дмитрий"))
         assertFalse(book.addHuman("Иванов Петр"))
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("Иванов Пе Пе") }
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("ИВАНОВ ПЕТР") }
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("Иванов") }
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("Ив1нов Петр") }
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("Ivanov Петр") }
     }
 
     @Test
@@ -37,6 +42,9 @@ internal class PhoneBookTest {
         assertFalse(book.addPhone("Иванов Петр", "+79211234567"))
         assertFalse(book.addPhone("Васильев Дмитрий", "+79211234567"))
         assertTrue(book.addPhone("Васильев Дмитрий", "+79217654321"))
+        assertTrue(book.addPhone("Иванов Петр", "+7+9+211234567"))
+        assertTrue(book.addPhone("Иванов Петр", "+792*1123#456-7"))
+        assertThrows(IllegalArgumentException::class.java) { book.addHuman("+7921123=4567") }
     }
 
     @Test

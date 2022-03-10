@@ -21,6 +21,15 @@ class PhoneBook {
 
     private val phoneBook = HashMap<String, MutableSet<String>>()
 
+
+    private fun checkNumber(number: String) {
+        if (!number.matches(Regex("[0-9+*\\-#]+"))) throw IllegalArgumentException("Incorrect number")
+    }
+
+    private fun checkName(name: String) {
+        if (!name.matches(Regex("[А-ЯЁ][а-яё]+\\s[А-ЯЁ][а-яё]+"))) throw IllegalArgumentException("Incorrect name")
+    }
+
     /**
      * Добавить человека.
      * Возвращает true, если человек был успешно добавлен,
@@ -28,6 +37,9 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun addHuman(name: String): Boolean {
+        //проверка на корректность и допустимые символы
+        checkName(name)
+        //проверка на наличие этого человека в телефонной книге
         return if (phoneBook.containsKey(name)) false
         else {
             phoneBook[name] = mutableSetOf()
@@ -42,6 +54,8 @@ class PhoneBook {
      * (во втором случае телефонная книга не должна меняться).
      */
     fun removeHuman(name: String): Boolean {
+        //проверка на допустимые символы
+        checkName(name)
         return if (!phoneBook.containsKey(name)) false
         else {
             phoneBook.remove(name)
@@ -57,11 +71,14 @@ class PhoneBook {
      * либо такой номер телефона зарегистрирован за другим человеком.
      */
     fun addPhone(name: String, phone: String): Boolean {
+        //проверка на допустимые символы
+        checkNumber(phone)
+        checkName(name)
         //проверка на наличие имени в телефонной книге
         if (!phoneBook.containsKey(name)) return false
         val phones = phoneBook[name]
-        //проверка на null и на наличие телефона в телефонной книге
-        if (phones == null || phones.contains(phone)) return false
+        //проверка на наличие телефона в телефонной книге
+        if (phones!!.contains(phone)) return false
         //проверка на наличие этого номера у других людей
         for (personPhones in phoneBook.values) {
             if (personPhones.contains(phone)) return false
@@ -77,9 +94,12 @@ class PhoneBook {
      * либо у него не было такого номера телефона.
      */
     fun removePhone(name: String, phone: String): Boolean {
+        //проверка на допустимые символы
+        checkNumber(phone)
+        checkName(name)
         if (!phoneBook.containsKey(name)) return false
         val phones = phoneBook[name]
-        if (phones == null || !phones.contains(phone)) return false
+        if (!phones!!.contains(phone)) return false
         phones.remove(phone)
         return true
     }
@@ -89,7 +109,9 @@ class PhoneBook {
      * Если этого человека нет в книге, вернуть пустой список
      */
     fun phones(name: String): Set<String> {
-        if (!phoneBook.containsKey(name)) return setOf()
+        //проверка на допустимые символы
+        checkName(name)
+        //возвращает пустое множество при null
         return phoneBook[name] ?: setOf()
     }
 
@@ -98,6 +120,8 @@ class PhoneBook {
      * Если такого номера нет в книге, вернуть null.
      */
     fun humanByPhone(phone: String): String? {
+        //проверка на допустимые символы
+        checkNumber(phone)
         for ((name, phones) in phoneBook) {
             if (phones.contains(phone)) return name
         }
@@ -115,7 +139,7 @@ class PhoneBook {
             if (this.phoneBook.size != other.phoneBook.size) return false
             //перебор имён и номеров, сопоставление с исходной телефонной книгой
             for ((name, phones) in phoneBook) {
-                if (!other.phoneBook.containsKey(name) || !other.phoneBook.containsValue(phones)) return false
+                if (other.phoneBook[name] != phones) return false
             }
         }
         return true
