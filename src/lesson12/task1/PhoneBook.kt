@@ -18,13 +18,22 @@ package lesson12.task1
  * Класс должен иметь конструктор по умолчанию (без параметров).
  */
 class PhoneBook {
+
+    private val phoneBook = HashMap<String, MutableSet<String>>()
+
     /**
      * Добавить человека.
      * Возвращает true, если человек был успешно добавлен,
      * и false, если человек с таким именем уже был в телефонной книге
      * (во втором случае телефонная книга не должна меняться).
      */
-    fun addHuman(name: String): Boolean = TODO()
+    fun addHuman(name: String): Boolean {
+        return if (phoneBook.containsKey(name)) false
+        else {
+            phoneBook[name] = mutableSetOf()
+            true
+        }
+    }
 
     /**
      * Убрать человека.
@@ -32,7 +41,13 @@ class PhoneBook {
      * и false, если человек с таким именем отсутствовал в телефонной книге
      * (во втором случае телефонная книга не должна меняться).
      */
-    fun removeHuman(name: String): Boolean = TODO()
+    fun removeHuman(name: String): Boolean {
+        return if (!phoneBook.containsKey(name)) false
+        else {
+            phoneBook.remove(name)
+            true
+        }
+    }
 
     /**
      * Добавить номер телефона.
@@ -41,7 +56,19 @@ class PhoneBook {
      * либо у него уже был такой номер телефона,
      * либо такой номер телефона зарегистрирован за другим человеком.
      */
-    fun addPhone(name: String, phone: String): Boolean = TODO()
+    fun addPhone(name: String, phone: String): Boolean {
+        //проверка на наличие имени в телефонной книге
+        if (!phoneBook.containsKey(name)) return false
+        val phones = phoneBook[name]
+        //проверка на null и на наличие телефона в телефонной книге
+        if (phones == null || phones.contains(phone)) return false
+        //проверка на наличие этого номера у других людей
+        for (personPhones in phoneBook.values) {
+            if (personPhones.contains(phone)) return false
+        }
+        phones.add(phone)
+        return true
+    }
 
     /**
      * Убрать номер телефона.
@@ -49,24 +76,50 @@ class PhoneBook {
      * и false, если человек с таким именем отсутствовал в телефонной книге
      * либо у него не было такого номера телефона.
      */
-    fun removePhone(name: String, phone: String): Boolean = TODO()
+    fun removePhone(name: String, phone: String): Boolean {
+        if (!phoneBook.containsKey(name)) return false
+        val phones = phoneBook[name]
+        if (phones == null || !phones.contains(phone)) return false
+        phones.remove(phone)
+        return true
+    }
 
     /**
      * Вернуть все номера телефона заданного человека.
      * Если этого человека нет в книге, вернуть пустой список
      */
-    fun phones(name: String): Set<String> = TODO()
+    fun phones(name: String): Set<String> {
+        if (!phoneBook.containsKey(name)) return setOf()
+        return phoneBook[name] ?: setOf()
+    }
 
     /**
      * Вернуть имя человека по заданному номеру телефона.
      * Если такого номера нет в книге, вернуть null.
      */
-    fun humanByPhone(phone: String): String? = TODO()
+    fun humanByPhone(phone: String): String? {
+        for ((name, phones) in phoneBook) {
+            if (phones.contains(phone)) return name
+        }
+        return null
+    }
 
     /**
      * Две телефонные книги равны, если в них хранится одинаковый набор людей,
      * и каждому человеку соответствует одинаковый набор телефонов.
      * Порядок людей / порядок телефонов в книге не должен иметь значения.
      */
-    override fun equals(other: Any?): Boolean = TODO()
+    override fun equals(other: Any?): Boolean {
+        if (other is PhoneBook) {
+            //сопоставление размеров телефонных книг
+            if (this.phoneBook.size != other.phoneBook.size) return false
+            //перебор имён и номеров, сопоставление с исходной телефонной книгой
+            for ((name, phones) in phoneBook) {
+                if (!other.phoneBook.containsKey(name) || !other.phoneBook.containsValue(phones)) return false
+            }
+        }
+        return true
+    }
+
+    override fun hashCode(): Int = phoneBook.hashCode()
 }
