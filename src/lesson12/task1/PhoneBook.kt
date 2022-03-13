@@ -133,17 +133,7 @@ class PhoneBook {
      * и каждому человеку соответствует одинаковый набор телефонов.
      * Порядок людей / порядок телефонов в книге не должен иметь значения.
      */
-    override fun equals(other: Any?): Boolean {
-        if (other is PhoneBook) {
-            //сопоставление размеров телефонных книг
-            if (this.phoneBook.size != other.phoneBook.size) return false
-            //перебор имён и номеров, сопоставление с исходной телефонной книгой
-            for ((name, phones) in phoneBook) {
-                if (other.phoneBook[name] != phones) return false
-            }
-        }
-        return true
-    }
+    override fun equals(other: Any?): Boolean = other is PhoneBook && this.phoneBook == other.phoneBook
 
     override fun hashCode(): Int = phoneBook.hashCode()
 }

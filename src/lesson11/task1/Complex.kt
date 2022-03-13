@@ -2,31 +2,19 @@
 
 package lesson11.task1
 
-import kotlin.math.abs
-
 /**
  * Фабричный метод для создания комплексного числа из строки вида x+yi
  */
 fun Complex(s: String): Complex {
-    try {
-        //проверка на наличие мнимой части
-        if (!s.endsWith("i")) throw IllegalArgumentException()
-        //поиск индекса первого знака '-' или '+'
-        var signIndex = s.indexOfFirst { it == '-' || it == '+' }
-        //поиск индекса при отрицательной вещественной части
-        if (signIndex == 0) {
-            signIndex = 1 + s.substring(1, s.length).indexOfFirst { it == '-' || it == '+' }
-        }
-        //ошибка при отсутствии '-' или '+'
-        if (signIndex == -1) throw IllegalArgumentException()
-        return Complex(
-            s.substring(0, signIndex).toDouble(),
-            s.substring(signIndex, s.length - 1).toDouble()
-        )
-    } catch (e: Exception) {
-        throw IllegalArgumentException("Incorrect input")
-    }
 
+    if (!s.matches(Regex("[-]?\\d+\\.?\\d*[+-]\\d+\\.?\\d*i"))) throw IllegalArgumentException("Incorrect number")
+
+    val signIndex = s.indexOfLast { it == '-' || it == '+' }
+
+    val re = s.substring(0, signIndex).toDouble()
+    val im = s.substring(signIndex, s.length - 1).toDouble()
+
+    return Complex(re, im)
 }
 
 
@@ -70,10 +58,13 @@ class Complex(val re: Double, val im: Double) {
     /**
      * Деление
      */
-    operator fun div(other: Complex): Complex = Complex(
-        (this.re * other.re + this.im * other.im) / (other.re * other.re + other.im * other.im),
-        (this.im * other.re - this.re * other.im) / (other.re * other.re + other.im * other.im)
-    )
+    operator fun div(other: Complex): Complex {
+        if (other == Complex(0.0, 0.0)) throw IllegalArgumentException("Not divisible by 0")
+        return Complex(
+            (this.re * other.re + this.im * other.im) / (other.re * other.re + other.im * other.im),
+            (this.im * other.re - this.re * other.im) / (other.re * other.re + other.im * other.im)
+        )
+    }
 
     /**
      * Сравнение на равенство
@@ -83,10 +74,7 @@ class Complex(val re: Double, val im: Double) {
     /**
      * Преобразование в строку
      */
-    override fun toString(): String {
-        return if (im >= 0) "${this.re}+${this.im}i"
-        else "${this.re}-${abs(this.im)}i"
-    }
+    override fun toString(): String = if (im >= 0) "${re}+${im}i" else "${re}${im}i"
 
     override fun hashCode(): Int {
         var result = re.hashCode()

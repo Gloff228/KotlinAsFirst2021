@@ -29,6 +29,10 @@ internal class PhoneBookTest {
         assertTrue(book.addHuman("Васильев Дмитрий"))
         assertTrue(book.removeHuman("Иванов Петр"))
         assertFalse(book.removeHuman("Сидорова Мария"))
+        assertThrows(IllegalArgumentException::class.java) { book.removeHuman("Ivanov Петр") }
+        assertThrows(IllegalArgumentException::class.java) { book.removeHuman("Иванов") }
+        assertThrows(IllegalArgumentException::class.java) { book.removeHuman("ИВАНОВ ПЕТР") }
+        assertThrows(IllegalArgumentException::class.java) { book.removeHuman("Иванов Пе Пе") }
     }
 
     @Test
@@ -45,6 +49,8 @@ internal class PhoneBookTest {
         assertTrue(book.addPhone("Иванов Петр", "+7+9+211234567"))
         assertTrue(book.addPhone("Иванов Петр", "+792*1123#456-7"))
         assertThrows(IllegalArgumentException::class.java) { book.addHuman("+7921123=4567") }
+        assertThrows(IllegalArgumentException::class.java) { book.addPhone("Васильев Антон", "+7921123=4567") }
+        assertThrows(IllegalArgumentException::class.java) { book.addPhone("Danilov Павел", "+79211234567") }
     }
 
     @Test
@@ -95,6 +101,7 @@ internal class PhoneBookTest {
         assertTrue(book.addPhone("Иванов Петр", "+79211234567"))
         assertTrue(book.addPhone("Иванов Петр", "+78121234567"))
         assertTrue(book.addPhone("Васильев Дмитрий", "+79217654321"))
+
         val book2 = PhoneBook()
         assertTrue(book2.addHuman("Васильев Дмитрий"))
         assertTrue(book2.addHuman("Иванов Петр"))
@@ -102,6 +109,19 @@ internal class PhoneBookTest {
         assertTrue(book2.addPhone("Васильев Дмитрий", "+79217654321"))
         assertTrue(book2.addPhone("Иванов Петр", "+79211234567"))
         assertTrue(book == book2)
+
+        val book3 = PhoneBook()
+        assertTrue(book3.addHuman("Васильев Дмитрий"))
+        assertTrue(book3.addHuman("Иванов Петр"))
+        assertTrue(book3.addPhone("Иванов Петр", "+79217654321"))
+        assertTrue(book3.addPhone("Васильев Дмитрий", "+78121234567"))
+        assertTrue(book3.addPhone("Иванов Петр", "+79211234567"))
+        assertFalse(book == book3)
+
+        val book4 = PhoneBook()
+        assertTrue(book4.addHuman("Васильев Дмитрий"))
+        assertTrue(book4.addHuman("Иванов Петр"))
+        assertFalse(book3 == book4)
     }
 
     @Test
@@ -120,5 +140,18 @@ internal class PhoneBookTest {
         assertTrue(book2.addPhone("Васильев Дмитрий", "+79217654321"))
         assertTrue(book2.addPhone("Иванов Петр", "+79211234567"))
         assertTrue(book.hashCode() == book2.hashCode())
+
+        val book3 = PhoneBook()
+        assertTrue(book3.addHuman("Васильев Дмитрий"))
+        assertTrue(book3.addHuman("Иванов Петр"))
+        assertTrue(book3.addPhone("Иванов Петр", "+79217654321"))
+        assertTrue(book3.addPhone("Васильев Дмитрий", "+78121234567"))
+        assertTrue(book3.addPhone("Иванов Петр", "+79211234567"))
+        assertFalse(book.hashCode() == book3.hashCode())
+
+        val book4 = PhoneBook()
+        assertTrue(book4.addHuman("Васильев Дмитрий"))
+        assertTrue(book4.addHuman("Иванов Петр"))
+        assertFalse(book3.hashCode() == book4.hashCode())
     }
 }
